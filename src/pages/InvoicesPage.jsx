@@ -9,19 +9,12 @@ export default function InvoicesPage() {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container sx={{ mt: 6 ,direction:"rtl", textAlign:"center" }}>
       <Typography variant="h4" gutterBottom>
         חשבוניות
       </Typography>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setOpenCreate(true)}
-        sx={{ mb: 2 }}
-      >
-        יצירת חשבונית חדשה
-      </Button>
+      
 
       <InvoiceTable onSelect={(inv) => setSelectedInvoice(inv)} />
 
@@ -39,6 +32,14 @@ export default function InvoicesPage() {
           onClose={() => setSelectedInvoice(null)}
         />
       )}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setOpenCreate(true)}
+        sx={{ mb: 2 , mt: 4}}
+      >
+        יצירת חשבונית חדשה
+      </Button>
     </Container>
   );
 }

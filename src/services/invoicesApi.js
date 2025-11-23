@@ -1,4 +1,4 @@
-import { mockInvoices } from "../components/invoices/mockInvoices";
+import { mockInvoices } from "../mock/mockInvoices";
 export async function getInvoices() {
   try {
     const response = await fetch("/api/invoices");
