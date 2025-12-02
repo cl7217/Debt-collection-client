@@ -4,7 +4,9 @@ import axios from "axios";
 const baseUrl = "https://localhost:7090/api/Client";
 
 export const getClients = () => {
-  return axios.get(baseUrl).then(res => res.data);
+  const clients = axios.get(baseUrl).then(res => res.data);
+
+  return clients;
 };
 
 export const getClientById = (id) => {
