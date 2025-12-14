@@ -1,103 +1,76 @@
-// src/components/agents/AgentTable.jsx
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchAgents } from "../../redux/agentsSlice";
-
-import AgentModal from "./AgentModal";
+// src/components/agents/NewAgentForm.jsx
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
-  Chip,
-  CircularProgress,
-  Box
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Checkbox,
+  FormControlLabel
 } from "@mui/material";
 
-export default function AgentTable() {
+import { createAgent } from "../../redux/agentsSlice";
+
+export default function NewAgentForm({ onCancel }) {
   const dispatch = useDispatch();
 
-  const agents = useSelector((state) => state.agents.list);
-  
-  const loading = useSelector((state) => state.agents.loading);
+  const [agentData, setAgentData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    isActive: true
+  });
 
-  const [selected, setSelected] = useState(null);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setAgentData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
+  };
 
-  useEffect(() => {
-    dispatch(fetchAgents());
-  }, [dispatch]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const getActiveStyle = (active) =>
-    active
-      ? { bg: "#4caf50", color: "#fff" }
-      : { bg: "#d32f2f", color: "#fff" };
-
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+    try {
+      await dispatch(createAgent(agentData)).unwrap();
+      onCancel?.();
+    } catch (err) {
+      console.error("Error creating agent:", err);
+    }
+  };
 
   return (
-    <>
-      <TableContainer
-        component={Paper}
-        sx={{ maxWidth: 900, margin: "auto", direction: "rtl" }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ textAlign: "center" }}>מספר סוכן</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>שם</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>טלפון</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>אימייל</TableCell>
-              <TableCell sx={{ textAlign: "center" }}>סטטוס</TableCell>
-            </TableRow>
-          </TableHead>
+    <Paper sx={{ p: 3, maxWidth: 650, margin: "auto", direction: "rtl" }}>
+      <Typography variant="h5" sx={{ mb: 2, textAlign: "center" }}>
+        יצירת סוכן חדש
+      </Typography>
 
-          <TableBody>
-            {agents?.map((agent) => {
-              const style = getActiveStyle(agent.isActive);
+      <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2 }} onSubmit={handleSubmit}>
+        <TextField label="שם" name="name" value={agentData.name} onChange={handleChange} required />
 
-              return (
-                <TableRow
-                  key={agent.id}
-                  hover
-                  onClick={() => setSelected(agent)}
-                  sx={{ cursor: "pointer" }}
-                >
-                  <TableCell sx={{ textAlign: "center" }}>{agent.id}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{agent.name}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{agent.phone}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{agent.email}</TableCell>
+        <TextField label="טלפון" name="phone" value={agentData.phone} onChange={handleChange} />
 
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Chip
-                      label={agent.isActive ? "פעיל" : "לא פעיל"}
-                      size="small"
-                      sx={{
-                        backgroundColor: style.bg,
-                        color: style.color,
-                        fontWeight: "bold"
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <TextField label="אימייל" name="email" value={agentData.email} onChange={handleChange} />
 
-      {selected && (
-        <AgentModal agent={selected} onClose={() => setSelected(null)} />
-      )}
-    </>
+        <FormControlLabel
+          control={<Checkbox checked={agentData.isActive} name="isActive" onChange={handleChange} />}
+          label="פעיל"
+        />
+
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+          <Button type="submit" variant="contained" color="primary">
+            צור סוכן
+          </Button>
+
+          <Button variant="outlined" color="secondary" onClick={onCancel}>
+            ביטול
+          </Button>
+        </Box>
+      </Box>
+    </Paper>
   );
 }

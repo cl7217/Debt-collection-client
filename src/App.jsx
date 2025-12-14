@@ -5,6 +5,7 @@ import Sidebar from "./components/layout/Sidebar";
 
 import ClientsPage from "./pages/ClientsPage";
 import AgentsPage from "./pages/AgentsPage";
+import SitesPage from "./pages/SitesPage";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/" element={<ClientsPage />} />
             <Route path="/clients" element={<ClientsPage />} />
             <Route path="/agents" element={<AgentsPage />} />
+            <Route path="/sites" element={<SitesPage />} />
           </Routes>
         </Container>
 

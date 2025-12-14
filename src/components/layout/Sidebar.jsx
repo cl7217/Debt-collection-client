@@ -31,6 +31,15 @@ export default function Sidebar() {
         >
           סוכנים
         </Button>
+
+        <Button
+          variant="contained"
+          fullWidth
+          component={Link}
+          to="/sites"
+        >
+          אתרים
+        </Button>
       </Stack>
     </Box>
   );
